@@ -2,8 +2,8 @@ pub extern crate once_cell;
 
 #[macro_export]
 macro_rules! defvar {
-    { $name:ident: $type:ty = $default:expr, or try $var:ident => $transform:block $(;)? } => {
-        pub static $name: $crate::once_cell::sync::Lazy<$type> = $crate::once_cell::sync::Lazy::new(|| {
+    { $vis:vis $name:ident: $type:ty = $default:expr, or try $var:ident => $transform:block $(;)? } => {
+        $vis static $name: $crate::once_cell::sync::Lazy<$type> = $crate::once_cell::sync::Lazy::new(|| {
             match ::std::env::var(stringify!($name)) {
                 Ok($var) => {
                     match $transform {
@@ -42,16 +42,16 @@ macro_rules! defvar {
     // crate, which is undesirable.  Thus all syntactic sugar forms
     // expand directly to the main form to keep recursion within
     // default limits.
-    { $name:ident: $type:ty = $default:expr, or try $var:ident => $transform:expr $(;)? } => {
-        defvar! { $name: $type = $default, or try $var => { $transform } }
+    { $vis:vis $name:ident: $type:ty = $default:expr, or try $var:ident => $transform:expr $(;)? } => {
+        defvar! { $vis $name: $type = $default, or try $var => { $transform } }
     };
-    { $name:ident: $type:ty = $default:expr, or $var:ident => $transform:block $(;)? } => {
-        defvar! { $name: $type = $default, or try $var => { Result::<$type, ()>::Ok($transform) } }
+    { $vis:vis $name:ident: $type:ty = $default:expr, or $var:ident => $transform:block $(;)? } => {
+        defvar! { $vis $name: $type = $default, or try $var => { Result::<$type, ()>::Ok($transform) } }
     };
-    { $name:ident: $type:ty = $default:expr, or $var:ident => $transform:expr $(;)? } => {
-        defvar! { $name: $type = $default, or try $var => { Result::<$type, ()>::Ok($transform) } }
+    { $vis:vis $name:ident: $type:ty = $default:expr, or $var:ident => $transform:expr $(;)? } => {
+        defvar! { $vis $name: $type = $default, or try $var => { Result::<$type, ()>::Ok($transform) } }
     };
-    { $name:ident: String = $default:expr $(;)? } => {
-        defvar! { $name: String = $default, or try v => { Result::<String, ()>::Ok(v.clone()) } }
+    { $vis:vis $name:ident: String = $default:expr $(;)? } => {
+        defvar! { $vis $name: String = $default, or try v => { Result::<String, ()>::Ok(v.clone()) } }
     };
 }
