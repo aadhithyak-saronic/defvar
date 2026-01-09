@@ -46,12 +46,12 @@ macro_rules! defvar {
         defvar! { $vis $name: $type = $default, or try $var => { $transform } }
     };
     { $vis:vis $name:ident: $type:ty = $default:expr, or $var:ident => $transform:block $(;)? } => {
-        defvar! { $vis $name: $type = $default, or try $var => { Result::<$type, ()>::Ok($transform) } }
+        defvar! { $vis $name: $type = $default, or try $var => { ::core::result::Result::<$type, ()>::Ok($transform) } }
     };
     { $vis:vis $name:ident: $type:ty = $default:expr, or $var:ident => $transform:expr $(;)? } => {
-        defvar! { $vis $name: $type = $default, or try $var => { Result::<$type, ()>::Ok($transform) } }
+        defvar! { $vis $name: $type = $default, or try $var => { ::core::result::Result::<$type, ()>::Ok($transform) } }
     };
     { $vis:vis $name:ident: String = $default:expr $(;)? } => {
-        defvar! { $vis $name: String = $default, or try v => { Result::<String, ()>::Ok(v.clone()) } }
+        defvar! { $vis $name: String = $default, or try v => { ::core::result::Result::<String, ()>::Ok(v.clone()) } }
     };
 }
